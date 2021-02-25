@@ -139,7 +139,7 @@
             $sql->bindParam(':status', $status);
             $sql->bindParam(':birthDate', $birthDate);
             $sql->bindParam(':address', $address);
-            $sql->bindParam(':barangay', $_SESSION['user']->barangay_id);
+            $sql->bindParam(':barangay', $_barangay);
             $sql->bindParam(':contactNumber', $contactNumber);
         }
 

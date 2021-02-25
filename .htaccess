@@ -1,0 +1,22 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+# Add .php extension from urls internally
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php 
+
+# EDIT BELOW
+# APPLICATION LOCAL DIRECTORY
+SetEnv APP_BASE    http://localhost/qccc/public/
+
+# DATABASE CREDENTIALS
+SetEnv DB_HOST     localhost
+SetEnv DB_DATABASE testdata
+SetEnv DB_USER     
+SetEnv DB_PASSWORD
+
+# SMTP CREDENTIALS (I used Fake SMTP named MailTrap)
+SetEnv SMTP_HOST 
+SetEnv SMTP_USER 
+SetEnv SMTP_PASSWORD 
+SetEnv SMTP_PORT 

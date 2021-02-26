@@ -22,8 +22,8 @@ Members:
     - APP_BASE is the path where you extracted the files, from the localhost (htdocs)
     - DB_HOST is the server of your database
     - DB_DATABASE is the name of the database
-    - DB_USER is your database username - NULL if using Windows Authentication
-    - DB_PASS is your database password - NULL if using Windows Authentication
+    - DB_USER is your database username - BLANK (NULL) if using Windows Authentication
+    - DB_PASS is your database password - BLANK (NULL) if using Windows Authentication
     - SMTP_HOST is the hostname of the SMTP server that you will use. I used a fake SMTP Server with [Mailtrap.io](https://www.mailtrap.io)
     - SMTP_USER is the username on your SMTP Server
     - SMTP_PASSWORD is the password on your SMTP Server

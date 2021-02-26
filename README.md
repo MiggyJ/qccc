@@ -27,6 +27,6 @@ Members:
     - SMTP_HOST is the hostname of the SMTP server that you will use. I used a fake SMTP Server with [Mailtrap.io](https://www.mailtrap.io)
     - SMTP_USER is the username on your SMTP Server
     - SMTP_PASSWORD is the password on your SMTP Server
-    - SMTP_PORT is the port used by yout SMTP Server
+    - SMTP_PORT is the port used by your SMTP Server
 4. Run your web server.
     - Either xampp or wamp.

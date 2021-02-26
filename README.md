@@ -30,3 +30,6 @@ Members:
     - SMTP_PORT is the port used by your SMTP Server
 4. Run your web server.
     - Either xampp or wamp.
+5. The admin credentials:
+    - Email is admin1@gmail.com
+    - Password is loonatheworld

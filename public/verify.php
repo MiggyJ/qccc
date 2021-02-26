@@ -27,69 +27,74 @@ session_start();
         // If not exists, return unkown, otherwise, generate password and send to email
         if(!isset($user)){
             $_SESSION['form_message'] = 'Email unknown. Please check the link sent to your email.';
-            header('location: '.getenv('APP_BASE').'forgot_password');
-            die();
         }else{
-            
-            // Generate password
-            $temp_pass = substr(hash('md5', uniqid()), 0, 8);
 
-            // Hash password
-            $password = password_hash($temp_pass, PASSWORD_DEFAULT);
+            $token = $_POST['code'];
 
-            // Update password in database
-            $sql =$conn->prepare(
-                "EXEC sp_set_new_password
-                    :password,
-                    :email"
-            );
-
-            $sql->bindParam(':password', $password);
-            $sql->bindParam(':email', $user->email);
-            $sql->execute();
-
-            // Alert for email
-            $_SESSION['form_success'] = 'An email has been sent.';
-
-            require('PHPMailer/PHPMailer.php');
-            require('PHPMailer/SMTP.php');
-            require('PHPMailer/Exception.php');
-
-            // Send email
-            $mail = new PHPMailer();
-
-            try {
-                //Server settings
-                $mail->SMTPDebug  = 0;                               //Enable verbose debug output
-                $mail->isSMTP();                                     //Send using SMTP
-                $mail->Host       = getenv('SMTP_HOST');              //Set the SMTP server to send through
-                $mail->SMTPAuth   = true;                            //Enable SMTP authentication
-                $mail->Username   = getenv('SMTP_USER');                //SMTP username
-                $mail->Password   = getenv('SMTP_PASSWORD');                //SMTP password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  //Enable TLS encryption;
-                $mail->Port       = getenv('SMTP_PORT');
-            
-                //Recipients
-                $mail->setFrom('admin@qccc.gov', 'QCCC Admin');
-                $mail->addAddress($user->email);     //Add a recipient
-            
-            
-                $body = file_get_contents('templates/password_template.php');
-
-                $body = str_replace(':password', $temp_pass, $body);
-
-                //Content
-                $mail->isHTML(true);                                  //Set email format to HTML
-                $mail->Subject = 'QCCC - New Password';
-                $mail->Body    = $body;
-                $mail->AltBody = "Here is your new password: $temp_pass.\nYou can change it after logging in.";
-            
-                $mail->send();
-                header('location: '.getenv('APP_BASE').'verify');
-                die();
-            } catch (Exception $e) {
-                echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            if(!strcmp($token, $user->forget_token)){
+                // Generate password
+                $temp_pass = substr(hash('md5', uniqid()), 0, 8);
+    
+                // Hash password
+                $password = password_hash($temp_pass, PASSWORD_DEFAULT);
+    
+                // Update password in database
+                $sql =$conn->prepare(
+                    "EXEC sp_set_new_password
+                        :password,
+                        :email"
+                );
+    
+                $sql->bindParam(':password', $password);
+                $sql->bindParam(':email', $user->email);
+                $sql->execute();
+    
+                // Alert for email
+                $_SESSION['form_success'] = 'An email has been sent.';
+    
+                require('PHPMailer/PHPMailer.php');
+                require('PHPMailer/SMTP.php');
+                require('PHPMailer/Exception.php');
+    
+                // Send email
+                $mail = new PHPMailer();
+    
+                try {
+                    //Server settings
+                    $mail->SMTPDebug  = 0;                               //Enable verbose debug output
+                    $mail->isSMTP();                                     //Send using SMTP
+                    $mail->Host       = getenv('SMTP_HOST');              //Set the SMTP server to send through
+                    $mail->SMTPAuth   = true;                            //Enable SMTP authentication
+                    $mail->Username   = getenv('SMTP_USER');                //SMTP username
+                    $mail->Password   = getenv('SMTP_PASSWORD');                //SMTP password
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  //Enable TLS encryption;
+                    $mail->Port       = getenv('SMTP_PORT');
+                
+                    //Recipients
+                    $mail->setFrom('admin@qccc.gov', 'QCCC Admin');
+                    $mail->addAddress($user->email);     //Add a recipient
+                
+                
+                    $body = file_get_contents('templates/password_template.php');
+    
+                    $body = str_replace(':password', $temp_pass, $body);
+    
+                    //Content
+                    $mail->isHTML(true);                                  //Set email format to HTML
+                    $mail->Subject = 'QCCC - New Password';
+                    $mail->Body    = $body;
+                    $mail->AltBody = "Here is your new password: $temp_pass.\nYou can change it after logging in.";
+                
+                    $mail->send();
+                    header('location: '.getenv('APP_BASE').'verify');
+                    die();
+                } catch (Exception $e) {
+                    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
+            }else{
+                $_SESSION['form_message'] = 'Invalid Code. Please check the code sent to your email.';
             }
+            
         }
     }
     
@@ -133,12 +138,6 @@ session_start();
                                     unset($_SESSION['form_message']);
                                 }
                             ?>
-                            <?php
-                                if(isset($_SESSION['form_success'])){
-                                    echo "<div class='text-center alert alert-success show mb-2' role='alert'>". $_SESSION['form_success'] ."</div>";
-                                    unset($_SESSION['form_success']);
-                                }
-                            ?>
                             <div class="form-group">
                                 <label for="">Code</label>
                                 <input type="text" name="code" class="form-control">
@@ -156,5 +155,13 @@ session_start();
     
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+        
+    <?php if(isset($_SESSION['form_success'])):?>
+    <script>
+        alert('<?=$_SESSION['form_success']?>')
+        window.location.href = '<?=getenv('APP_BASE')?>'
+    </script>
+    <?php unset($_SESSION['form_success'])?>
+    <?php endif?>
 </body>
 </html>

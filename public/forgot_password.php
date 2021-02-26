@@ -127,12 +127,6 @@ session_start();
                                     unset($_SESSION['form_message']);
                                 }
                             ?>
-                            <?php
-                                if(isset($_SESSION['form_success'])){
-                                    echo "<div class='text-center alert alert-success show mb-2' role='alert'>". $_SESSION['form_success'] ."</div>";
-                                    unset($_SESSION['form_success']);
-                                }
-                            ?>
                             <div class="form-group">
                                 <label for="">Email</label>
                                 <input type="email" name="email" class="form-control">
@@ -150,5 +144,12 @@ session_start();
     
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <?php if(isset($_SESSION['form_success'])):?>
+    <script>
+        alert('<?=$_SESSION['form_success']?>')
+        window.location.href = '<?=getenv('APP_BASE')?>'
+    </script>
+    <?php unset($_SESSION['form_success'])?>
+    <?php endif?>
 </body>
 </html>
